@@ -37,6 +37,9 @@ const BillModal: React.FC<BillModalProps> = ({ bill, onClose }) => {
             right: 8,
             top: 8,
             color: (theme) => theme.palette.grey[500],
+            '&:focus': {
+              outline: 'none',
+            },
           }}
         >
           <CloseIcon />

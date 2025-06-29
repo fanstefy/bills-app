@@ -27,7 +27,7 @@ export const useBills = () => {
     const loadBills = async () => {
       setLoading(true);
       try {
-        const data = await fetchBills(300);
+        const data = await fetchBills(150);
         const mapped = mapBills(data);
         setBills(mapped);
       } catch (err) {
