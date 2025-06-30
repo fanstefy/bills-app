@@ -27,7 +27,7 @@ const BillModal: React.FC<BillModalProps> = ({ bill, onClose }) => {
 
   return (
     <Dialog open={!!bill} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>
+      <DialogTitle align="center">
         Bill Titles
         <IconButton
           aria-label="close"
@@ -52,13 +52,13 @@ const BillModal: React.FC<BillModalProps> = ({ bill, onClose }) => {
         </Tabs>
 
         {tabIndex === 0 && (
-          <Typography variant="body1" sx={{ mt: 2 }}>
+          <Typography variant="body1" align="center" sx={{ mt: 2 }}>
             {bill.title_en}
           </Typography>
         )}
 
         {tabIndex === 1 && (
-          <Typography variant="body1" sx={{ mt: 2 }}>
+          <Typography variant="body1" align="center" sx={{ mt: 2 }}>
             {bill.title_ga}
           </Typography>
         )}
