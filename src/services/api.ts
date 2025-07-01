@@ -7,9 +7,9 @@ const api = axios.create({
   },
 });
 
-export const fetchBills = async (limit: number = 100) => {
+export const fetchBills = async (limit: number = 20, skip: number = 0) => {
   try {
-    const response = await api.get(`/legislation?limit=${limit}`);
+    const response = await api.get(`/legislation?limit=${limit}&skip=${skip}`);
     return response.data;
   } catch (error) {
     console.error('Error fetching bills:', error);

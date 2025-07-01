@@ -38,6 +38,7 @@ export interface BillData {
 
 // adapted type for the application
 export interface Bill {
+  id: string; // unique identifier for the bill (don't exist in API response, added additionally)
   billNo: string;
   billType: string;
   billStatus: string;

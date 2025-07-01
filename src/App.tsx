@@ -1,13 +1,10 @@
 import './App.css';
-import BillTable from './components/BillTable';
-import { useBills } from './hooks/useBills';
+import BillTablePage from './components/BillTable/BillTablePage';
 
 function App() {
-  const { bills, loading, error } = useBills();
-
   return (
     <div style={{ padding: '2rem' }}>
-      <BillTable bills={bills} loading={loading} error={error} />
+      <BillTablePage />
     </div>
   );
 }
