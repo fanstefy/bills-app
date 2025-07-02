@@ -72,6 +72,7 @@ const BillTablePage: React.FC = () => {
       if (updated.has(bill.id)) {
         updated.delete(bill.id);
       } else {
+        console.log('Add to favorites (request sent to server)');
         updated.set(bill.id, bill);
       }
       return updated;
@@ -118,7 +119,7 @@ const BillTablePage: React.FC = () => {
         </Tabs>
       </Box>
 
-      {/* Main content area */}
+      {/* Main content  */}
       <Box
         sx={{
           height: 'calc(100vh - 90px)',

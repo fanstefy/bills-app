@@ -1,30 +1,10 @@
 import { fetchBills } from '../services/api';
-import type { Bill, BillApiResponse } from '../types/bill';
+import type { Bill } from '../types/bill';
 import { useQuery } from '@tanstack/react-query';
+import { transformBillData } from '../utils/billTransformers';
 
 // Constants
 const SEARCH_FETCH_LIMIT = 200;
-
-// Transform API response to Bill array
-const transformBillData = (apiResponse: BillApiResponse): Bill[] => {
-  return apiResponse.results.map((item, index) => {
-    const sponsorNames =
-      item.bill.sponsors
-        ?.map((sponsor) => sponsor.sponsor.as?.showAs)
-        .filter(Boolean)
-        .join(', ') || 'Unknown';
-
-    return {
-      id: `${item.bill.billNo}-${index}`,
-      billNo: item.bill.billNo,
-      billType: item.bill.billType,
-      billStatus: item.bill.status,
-      sponsor: sponsorNames,
-      title_en: item.bill.shortTitleEn,
-      title_ga: item.bill.shortTitleGa,
-    };
-  });
-};
 
 // Filter bills based on search query
 const filterBills = (bills: Bill[], searchQuery: string): Bill[] => {
