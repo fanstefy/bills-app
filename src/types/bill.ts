@@ -9,34 +9,34 @@ export interface BillApiResponse {
   results: BillResult[];
 }
 
-// one item from results array
 export interface BillResult {
   bill: BillData;
 }
 
-// single bill object from bill field
 export interface BillData {
   billNo: string;
   billType: string;
   status: string;
-  sponsors?: {
-    sponsor: {
-      as?: {
-        showAs: string;
-        uri: string | null;
-      };
-      by?: {
-        showAs: string | null;
-        uri: string | null;
-      };
-      isPrimary: boolean;
-    };
-  }[];
+  sponsors?: Sponsor[];
   shortTitleEn: string;
   shortTitleGa: string;
 }
 
-// adapted type for the application
+export interface Sponsor {
+  sponsor: {
+    as?: {
+      showAs: string;
+      uri: string | null;
+    };
+    by?: {
+      showAs: string | null;
+      uri: string | null;
+    };
+    isPrimary: boolean;
+  };
+}
+
+// transformed bill type for the application
 export interface Bill {
   id: string; // unique identifier for the bill (don't exist in API response, added additionally)
   billNo: string;
