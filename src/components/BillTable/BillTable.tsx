@@ -90,7 +90,6 @@ const BillTable: React.FC<BillTableProps> = ({
           )}
         </TableBody>
       </Table>
-
       {showPagination && (
         <TablePagination
           component="div"

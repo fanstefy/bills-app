@@ -18,7 +18,6 @@ interface BillModalProps {
 
 const BillModal: React.FC<BillModalProps> = ({ bill, onClose }) => {
   const [tabIndex, setTabIndex] = useState(0);
-
   if (!bill) return null;
 
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {

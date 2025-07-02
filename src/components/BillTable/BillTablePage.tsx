@@ -1,49 +1,58 @@
-import { useState, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { Box, Tabs, Tab, Typography } from '@mui/material';
-import { useBills } from '../../hooks/useBills';
+import { useBillsReactQuery } from '../../hooks/useBills';
 import type { Bill } from '../../types/bill';
 import SearchInput from './SearchInput';
 import BillTable from './BillTable';
 import BillModal from '../BillModal';
 
+// Constants
+const ROWS_PER_PAGE = 10;
+const TABS = {
+  ALL_BILLS: 0,
+  FAVORITES: 1,
+} as const;
+
 const BillTablePage: React.FC = () => {
+  // State management
   const [searchQuery, setSearchQuery] = useState('');
-  const [tabValue, setTabValue] = useState(0);
+  const [activeTab, setActiveTab] = useState<number>(TABS.ALL_BILLS);
   const [selectedBill, setSelectedBill] = useState<Bill | null>(null);
   const [favorites, setFavorites] = useState<Map<string, Bill>>(new Map());
   const [currentPage, setCurrentPage] = useState(0);
-  const rowsPerPage = 10;
 
-  const { bills, totalCount, loading, error } = useBills(
+  // Reset page when search or tab changes
+  useEffect(() => {
+    setCurrentPage(0);
+  }, [searchQuery, activeTab]);
+
+  // Data fetching
+  const { data, isLoading, error } = useBillsReactQuery(
     currentPage,
-    rowsPerPage,
+    ROWS_PER_PAGE,
     searchQuery
   );
-  console.log('stefan bills: ', bills);
+
+  const bills = data?.results ?? [];
+  const totalCount = data?.totalCount ?? 0;
+
+  // Computed values
+  const isShowingFavorites = activeTab === TABS.FAVORITES;
+  const displayedBills = isShowingFavorites
+    ? Array.from(favorites.values())
+    : bills;
+  const displayedTotalCount = isShowingFavorites
+    ? displayedBills.length
+    : totalCount;
+
+  // Event handlers
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
-    setTabValue(newValue);
+    setActiveTab(newValue);
   };
 
-  const handleSearch = useCallback((query: string) => {
+  const handleSearch = (query: string) => {
     setSearchQuery(query);
-  }, []);
-
-  const toggleFavorite = useCallback((bill: Bill) => {
-    setFavorites((prev) => {
-      const newFavs = new Map(prev);
-      if (newFavs.has(bill.id)) {
-        newFavs.delete(bill.id);
-      } else {
-        newFavs.set(bill.id, bill);
-      }
-      return newFavs;
-    });
-  }, []);
-
-  const isFavorite = useCallback(
-    (billId: string) => favorites.has(billId),
-    [favorites]
-  );
+  };
 
   const handleRowClick = (bill: Bill) => {
     setSelectedBill(bill);
@@ -53,36 +62,36 @@ const BillTablePage: React.FC = () => {
     setSelectedBill(null);
   };
 
-  const handleChangePage = (_event: unknown, newPage: number) => {
+  const handlePageChange = (_event: unknown, newPage: number) => {
     setCurrentPage(newPage);
   };
 
+  const toggleFavorite = (bill: Bill) => {
+    setFavorites((prev) => {
+      const updated = new Map(prev);
+      if (updated.has(bill.id)) {
+        updated.delete(bill.id);
+      } else {
+        updated.set(bill.id, bill);
+      }
+      return updated;
+    });
+  };
+
+  const isFavorite = (billId: string) => favorites.has(billId);
+
+  // Error handling
   if (error) {
     return (
       <Typography color="error" align="center" mt={4}>
-        {error}
+        {error instanceof Error ? error.message : String(error)}
       </Typography>
     );
   }
 
-  // Filter bills based on tab and search query
-  const filteredBills =
-    tabValue === 1
-      ? Array.from(favorites.values()).filter(
-          (bill) =>
-            bill.billType.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            bill.billNo.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            bill.sponsor.toLowerCase().includes(searchQuery.toLowerCase())
-        )
-      : bills.filter(
-          (bill) =>
-            bill.billType.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            bill.billNo.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            bill.sponsor.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-
   return (
     <>
+      {/* Header with search and tabs */}
       <Box
         sx={{
           position: 'sticky',
@@ -96,7 +105,7 @@ const BillTablePage: React.FC = () => {
       >
         <SearchInput onSearch={handleSearch} />
         <Tabs
-          value={tabValue}
+          value={activeTab}
           onChange={handleTabChange}
           centered
           sx={{
@@ -109,6 +118,7 @@ const BillTablePage: React.FC = () => {
         </Tabs>
       </Box>
 
+      {/* Main content area */}
       <Box
         sx={{
           height: 'calc(100vh - 90px)',
@@ -117,21 +127,22 @@ const BillTablePage: React.FC = () => {
         }}
       >
         <BillTable
-          bills={filteredBills}
+          bills={displayedBills}
           isFavorite={isFavorite}
           toggleFavorite={toggleFavorite}
           onRowClick={handleRowClick}
           currentPage={currentPage}
-          rowsPerPage={rowsPerPage}
-          totalCount={totalCount}
-          onPageChange={handleChangePage}
-          showPagination={tabValue === 0}
-          loading={loading}
-          tabValue={tabValue}
+          rowsPerPage={ROWS_PER_PAGE}
+          totalCount={displayedTotalCount}
+          onPageChange={handlePageChange}
+          showPagination={!isShowingFavorites}
+          loading={isLoading}
+          tabValue={activeTab}
           searchQuery={searchQuery}
         />
       </Box>
 
+      {/* Modal */}
       {selectedBill && (
         <BillModal bill={selectedBill} onClose={handleCloseModal} />
       )}
