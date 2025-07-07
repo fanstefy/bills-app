@@ -1,5 +1,6 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { TextField, Box } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
 import debounce from 'lodash/debounce';
 
 interface SearchInputProps {
@@ -38,6 +39,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ onSearch }) => {
         p: 1,
         display: 'flex',
         justifyContent: 'center',
+        borderRadius: '100px',
       }}
     >
       <TextField
@@ -46,7 +48,15 @@ const SearchInput: React.FC<SearchInputProps> = ({ onSearch }) => {
         variant="outlined"
         value={inputValue}
         onChange={handleChange}
-        sx={{ width: '300px' }}
+        sx={{
+          width: '300px',
+          '& .MuiOutlinedInput-root': {
+            borderRadius: '100px',
+          },
+        }}
+        InputProps={{
+          endAdornment: <SearchIcon sx={{ color: '#888' }} />,
+        }}
       />
     </Box>
   );

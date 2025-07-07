@@ -55,18 +55,18 @@ const BillTable: React.FC<BillTableProps> = ({
     <TableContainer component={Paper}>
       <Table>
         <TableHead>
-          <TableRow>
-            <TableCell align="center">Bill Number</TableCell>
-            <TableCell align="center">Bill Type</TableCell>
-            <TableCell align="center">Bill Status</TableCell>
-            <TableCell align="center">Sponsor</TableCell>
-            <TableCell align="center"></TableCell>
+          <TableRow sx={{ backgroundColor: '#e3eaf5 ' }}>
+            <TableCell align="left">Bill Number</TableCell>
+            <TableCell align="left">Bill Type</TableCell>
+            <TableCell align="left">Bill Status</TableCell>
+            <TableCell align="left">Sponsor</TableCell>
+            <TableCell align="left"></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {bills.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={5} align="center">
+              <TableCell colSpan={5} align="left">
                 <Typography variant="body2" color="text.secondary" py={2}>
                   {tabValue === 1
                     ? 'No favorite bills'

@@ -1,4 +1,4 @@
-import { TableCell, IconButton, Tooltip } from '@mui/material';
+import { TableCell, IconButton, Tooltip, Chip } from '@mui/material';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { motion } from 'framer-motion';
@@ -11,6 +11,17 @@ interface BillTableRowProps {
   toggleFavorite: (bill: Bill) => void;
   onRowClick: (bill: Bill) => void;
 }
+
+type StatusColor = 'success' | 'error' | 'warning' | 'info' | 'default';
+
+const STATUS_COLORS: Record<string, StatusColor> = {
+  Current: 'success',
+  Withdrawn: 'warning',
+  Enacted: 'info',
+  Rejected: 'error',
+  Defeated: 'error',
+  Lapsed: 'default',
+};
 
 const BillTableRow: React.FC<BillTableRowProps> = ({
   bill,
@@ -26,13 +37,21 @@ const BillTableRow: React.FC<BillTableRowProps> = ({
     transition={{ duration: 0.3, delay: index * 0.02 }}
     whileHover={{ backgroundColor: '#f5f5f5' }}
     onClick={() => onRowClick(bill)}
-    style={{ cursor: 'pointer' }}
+    style={{ cursor: 'pointer', textAlign: 'left' }}
   >
-    <TableCell align="center">{bill.billNo}</TableCell>
-    <TableCell align="center">{bill.billType}</TableCell>
-    <TableCell align="center">{bill.billStatus}</TableCell>
-    <TableCell align="center">{bill.sponsor}</TableCell>
-    <TableCell align="center" onClick={(e) => e.stopPropagation()}>
+    <TableCell align="left">{bill.billNo}</TableCell>
+    <TableCell align="left">{bill.billType}</TableCell>
+    <TableCell align="left">
+      <Chip
+        label={bill.billStatus}
+        color={STATUS_COLORS[bill.billStatus] || 'default'}
+        size="small"
+        variant="outlined"
+        sx={{ fontWeight: 600 }}
+      />
+    </TableCell>
+    <TableCell align="left">{bill.sponsor}</TableCell>
+    <TableCell align="left" onClick={(e) => e.stopPropagation()}>
       <Tooltip
         title={
           isFavorite(bill.id) ? 'Remove from favorites' : 'Add to favorites'
